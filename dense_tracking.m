@@ -45,10 +45,10 @@ inv_rel_pose = get_relative_pose(new_pose, initial_pose);
 
 %depth_factor = 1/5000;
 %depth_factor = 1;
-depth_factor = 0.001;
+%depth_factor = 0.001;
 
 % normalize depth so it ranges from 0 to 255 like intensity
-%depth_factor = 255 / double(max(max(depth_img)));
+depth_factor = 255 / double(max(max(depth_img)));
 
 depth_img = double(depth_img) * depth_factor;
 
@@ -56,8 +56,10 @@ depth_img = double(depth_img) * depth_factor;
 %img1 = normalize_img(img1);
 %img2 = normalize_img(img2);
 
-pyr1 = get_pyramid(img1, 'median', 4);
-pyr2 = get_pyramid(img2, 'median', 4);
+%pyr1 = get_pyramid(img1, 'median', 4);
+%pyr2 = get_pyramid(img2, 'median', 4);
+pyr1 = get_pyramid(img1, 'mean', 4);
+pyr2 = get_pyramid(img2, 'mean', 4);
 
 depth_pyr = get_pyramid(depth_img, 'median', 4);
 
@@ -96,7 +98,10 @@ depth_pyr = get_pyramid(depth_img, 'median', 4);
 % initial transformation
 initial_guess = eye(4,4);
 
-guessed_pose = dense_tracking_fwd_additive(K, pyr1, pyr2, depth_pyr, initial_guess)
+guessed_pose_ic = dense_tracking_inv_compositional(K, pyr1, pyr2, depth_pyr, initial_guess)
+guessed_pose = guessed_pose_ic;
+
+%guessed_pose = dense_tracking_fwd_additive(K, pyr1, pyr2, depth_pyr, initial_guess)
 
 % guess the identity function
 % guessed_pose = dense_tracking_fwd_additive(K, pyr1, pyr1, depth_pyr, initial_guess)

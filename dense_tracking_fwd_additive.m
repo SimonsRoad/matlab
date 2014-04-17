@@ -58,14 +58,6 @@ function [pose] = dense_tracking_fwd_additive(K, img1_pyr, img2_pyr, depth1_pyr,
     pose = guess;
 end
 
-function [JWi] = get_warp_jacobian(K, x, y, z)
-    focals = [K(1,1); K(2,2)];
-    
-    JWi = [ 1/z, 0, -x/z^2, -(x*y)/z^2, 1+(x^2/z^2), -y/z; ...
-            0, 1/z, -y/z^2, -(1+(y^2/z^2)), (x*y)/z^2, x/z];
-    JWi = bsxfun(@times, JWi, focals);
-end
-
 
 function [J, residuals] = compute_jacobian_forward_additive(K, img1, img2, img1_depth, ...
                                                              points2d, transformed_points2d, transformed_points3d)
@@ -121,45 +113,3 @@ function [J, residuals] = compute_jacobian_forward_additive(K, img1, img2, img1_
         J = [J; Ji];
     end
 end
-
-% function [J, residuals] = compute_jacobian_forward_additive(K, img1, img2, img2_gradx, img2_grady, ...
-%                                                             points2d, transformed_points2d, transformed_points3d)
-%     n = size(points2d, 2);
-%     x_size = size(img2, 1);
-%     y_size = size(img2, 2);
-%     bad_transformed = 0;
-%     residuals = [];
-%     J = [];
-%     for i = 1:n
-%         x = points2d(1,i);
-%         y = points2d(2,i);
-%         x_trans = transformed_points2d(1, i);
-%         y_trans = transformed_points2d(2, i);
-%         
-%         if x_trans+1 > x_size || y_trans+1 > y_size ...
-%             || x_trans < 1 || y_trans < 1
-%             bad_transformed = bad_transformed + 1;
-%             continue;
-%         end
-%         
-%         img1_val = img1(x,y,:);
-%         % x_trans and y_trans are not integers
-%         % use bilinear interpolation 
-%         img2_val = interpImg(img2, [x_trans, y_trans]);
-%         residual = img2_val - img1_val;
-%         % get the mean over the 3 channels (if rgb)
-%         residual = mean(residual);
-%         residuals = [residuals; residual];
-%         gradx_val = interpImg(img2_gradx, [x_trans, y_trans]);
-%         grady_val = interpImg(img2_grady, [x_trans, y_trans]);
-%         JIi = [ gradx_val, grady_val];
-%         
-%         x_world = transformed_points3d(1, i);
-%         y_world = transformed_points3d(2, i);
-%         z_world = transformed_points3d(3, i);
-%         
-%         Jwi = get_warp_jacobian(K, x_world, y_world, z_world);
-%         Ji = JIi * Jwi;
-%         J = [J; Ji];
-%     end
-%end

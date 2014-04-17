@@ -41,10 +41,10 @@ function [img_val] = bilinearInterpol(img, point2d)
     x1 = x0 + 1;
     y1 = y0 + 1;
     
-    x0_weight = x - x0;
-    y0_weight = y - y0;
-    x1_weight = 1 - x0_weight;
-    y1_weight = 1 - y0_weight;
+    x1_weight = x - x0;
+    y1_weight = y - y0;
+    x0_weight = 1 - x1_weight;
+    y0_weight = 1 - y1_weight;
     
     val = 0;
     sum = 0;
@@ -82,11 +82,11 @@ function [img_val] = bilinearInterpolWithDepth(img, img_depth, point2d, z)
     x1 = x0 + 1;
     y1 = y0 + 1;
     
-    x0_weight = x - x0;
-    y0_weight = y - y0;
-    x1_weight = 1 - x0_weight;
-    y1_weight = 1 - y0_weight;
-    z_eps = z - 0.05;
+    x1_weight = x - x0;
+    y1_weight = y - y0;
+    x0_weight = 1 - x1_weight;
+    y0_weight = 1 - y1_weight;
+    z_eps = z - 1;
     
     val = 0;
     sum = 0;
