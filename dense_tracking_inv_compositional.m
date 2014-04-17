@@ -8,7 +8,7 @@ function [pose] = dense_tracking_inv_compositional(K, img1_pyr, img2_pyr, depth1
     
     levels = size(img1_pyr,1);
     
-    for level = levels:-1:2
+    for level = levels:-1:1
         increment = double([0;0;0;0;0;0]);
     
         level
