@@ -19,12 +19,15 @@ Results
 Inputs:
 
 Image1 :
+
 ![alt tag](https://raw.githubusercontent.com/mtourne/matlab/master/data/rgbd_dataset_freiburg1_xyz/rgb/1305031102.211214.png)
 
 Image1 Depth:
+
 ![alt tag](https://raw.githubusercontent.com/mtourne/matlab/master/data/rgbd_dataset_freiburg1_xyz/depth/1305031102.226738.png)
 
 Image2:
+
 ![alt tag](https://raw.githubusercontent.com/mtourne/matlab/master/data/rgbd_dataset_freiburg1_xyz/rgb/1305031102.275326.png)
 
 Outputs :
@@ -40,7 +43,8 @@ guessed_pose =
 ```
 
 Residual Image :
-![alt tag](https://raw.githubusercontent.com/mtourne/matlab/master/dens_tracking_residual.jpg)
+
+![alt tag](https://raw.githubusercontent.com/mtourne/matlab/master/dense_tracking_residual.jpg)
 
 Useful reads
 ============
