@@ -52,16 +52,14 @@ depth_factor = 255 / double(max(max(depth_img)));
 
 depth_img = double(depth_img) * depth_factor;
 
-%depth_img = normalize_img(depth_img);
-%img1 = normalize_img(img1);
-%img2 = normalize_img(img2);
-
-%pyr1 = get_pyramid(img1, 'median', 4);
-%pyr2 = get_pyramid(img2, 'median', 4);
-pyr1 = get_pyramid(img1, 'mean', 4);
-pyr2 = get_pyramid(img2, 'mean', 4);
+pyr1 = get_pyramid(img1, 'median', 4);
+pyr2 = get_pyramid(img2, 'median', 4);
+%pyr1 = get_pyramid(img1, 'mean', 4);
+%pyr2 = get_pyramid(img2, 'mean', 4);
 
 depth_pyr = get_pyramid(depth_img, 'median', 4);
+%depth_pyr = get_pyramid(depth_img, 'median2', 4);
+
 
 %% test warp 
 % tic
@@ -98,10 +96,16 @@ depth_pyr = get_pyramid(depth_img, 'median', 4);
 % initial transformation
 initial_guess = eye(4,4);
 
-guessed_pose_ic = dense_tracking_inv_compositional(K, pyr1, pyr2, depth_pyr, initial_guess)
-guessed_pose = guessed_pose_ic;
+tic
+guessed_pose_sic = sparse_tracking_ic(K,  pyr1, pyr2, depth_pyr, initial_guess)
+guessed_pose = guessed_pose_sic;
+toc
 
-%guessed_pose = dense_tracking_fwd_additive(K, pyr1, pyr2, depth_pyr, initial_guess)
+%guessed_pose_ic = dense_tracking_inv_compositional(K, pyr1, pyr2, depth_pyr, initial_guess)
+%guessed_pose = guessed_pose_ic;
+
+%guessed_pose_fwd = dense_tracking_fwd_additive(K, pyr1, pyr2, depth_pyr, initial_guess)
+%guessed_pose = guessed_pose_fwd;
 
 % guess the identity function
 % guessed_pose = dense_tracking_fwd_additive(K, pyr1, pyr1, depth_pyr, initial_guess)
@@ -111,14 +115,12 @@ pyr_idx = 1;
 
 [points2d, points3d] = get_3d_points(K, depth_pyr{pyr_idx}, size(pyr1{pyr_idx}, 1), size(pyr1{pyr_idx}, 2));
 [transformed_points2d, transformed_points3d ] = warpAndProject(points3d, K, guessed_pose);
-warped_img2_on_img1_guessed = warpimgIntensity(pyr2{pyr_idx}, points2d, transformed_points2d);
-warped_img2_on_img1_guessed2 = warpimgIntensityWithDepth(pyr2{pyr_idx}, depth_pyr{pyr_idx}, ...
-                                                       points2d, transformed_points2d,...
-                                                       transformed_points3d);
-error_img_guessed = uint8(abs(warped_img2_on_img1_guessed - double(pyr1{pyr_idx})));
-error_img_guessed2 = uint8(abs(warped_img2_on_img1_guessed2 - double(pyr1{pyr_idx})));
-
-
-imshow(error_img_guessed);
+warped_img2_on_img1_guessed = warpimgIntensityWithDepth(pyr2{pyr_idx}, depth_pyr{pyr_idx}, ...
+                                                        points2d, transformed_points2d,...
+                                                        transformed_points3d);
+error_img = abs(warped_img2_on_img1_guessed - double(pyr1{pyr_idx}));
+%norm(error_img)
+    
+imshow(uint8(error_img));
 
 

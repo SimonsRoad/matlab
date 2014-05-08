@@ -8,6 +8,8 @@ function [pose] = dense_tracking_fwd_additive(K, img1_pyr, img2_pyr, depth1_pyr,
     levels = size(img1_pyr,1);
     
     for level = levels:-1:1
+        guess
+        
         increment = double([0;0;0;0;0;0]);
     
         level
@@ -24,8 +26,8 @@ function [pose] = dense_tracking_fwd_additive(K, img1_pyr, img2_pyr, depth1_pyr,
         error_last = 0;
         accept = true;
         while accept && (k == 1 || (error_last - error) > epsilon) && (k < k_max)
-            increment = twistexp(increment)
-            new_guess = increment * guess
+            increment = twistexp(increment);
+            new_guess = increment * guess;
             
             [transformed_points2d, transformed_points3d] = warpAndProject(points3d, K, new_guess);      
 
@@ -48,7 +50,7 @@ function [pose] = dense_tracking_fwd_additive(K, img1_pyr, img2_pyr, depth1_pyr,
                 % steepest_grad = zeros(6,1); for j=1:size(J,1), steepest_grad = steepest_grad - J(j,:)' * residuals(j); end
                 steepest_descent = -J'*residuals;
                 % compute the increment :
-                increment = H \ steepest_descent                
+                increment = H \ steepest_descent;               
             end
 
             k = k + 1;

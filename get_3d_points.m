@@ -1,4 +1,5 @@
 function [ points2d, points3d ] = get_3d_points(K, depth_img, height, width)
+    % get all the 3d points (and 2d points) from a depth image
     points2d = NaN(3, height * width);
     points3d = NaN(4, height * width);
     fx = K(1,1);
